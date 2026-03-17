@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 
@@ -456,5 +457,25 @@ public class UserInfoCell extends View implements NotificationCenter.Notificatio
 
     public void setAnimating(boolean animating) {
         this.animating = animating;
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        StringBuilder sb = new StringBuilder();
+        sb.append(title.getText());
+        sb.append('\n');
+        sb.append(subtitle.getText());
+        for (var row : rows) {
+            sb.append('\n');
+            sb.append(row.key.getText());
+            sb.append(": ");
+            sb.append(row.value.getText());
+        }
+        if (footer != null) {
+            sb.append('\n');
+            sb.append(footer.getText());
+        }
+        info.setContentDescription(sb);
     }
 }

@@ -13534,6 +13534,8 @@ public class ChatActivityEnterView extends FrameLayout implements
                 left = x + staticLayout.getLineWidth(0);
             }
 
+            setContentDescription(LocaleController.formatDuration((int) time));
+
             oldString = newString;
 
             if (isRunning || replaceTransition != 0) {
