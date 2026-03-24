@@ -2,8 +2,10 @@ package tw.nekomimi.nekogram.helpers;
 
 import static org.telegram.messenger.AndroidUtilities.dp;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -284,7 +286,7 @@ public class PopupHelper {
         var pm = context.getPackageManager();
         var intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(uri));
-        var activities = pm.queryIntentActivities(intent, 0);
+        var activities = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         for (var info : activities) {
             if (TELEGRAM_PACKAGES.contains(info.activityInfo.packageName)) {
                 intent.setPackage(info.activityInfo.packageName);
@@ -319,7 +321,13 @@ public class PopupHelper {
         var officialIntent = findOfficialTelegram(context, uri);
         if (officialIntent != null) {
             buttonTextView.setText(LocaleController.getString(R.string.OpenOfficialApp));
-            buttonTextView.setOnClickListener(v -> context.startActivity(officialIntent));
+            buttonTextView.setOnClickListener(v -> {
+                try {
+                    context.startActivity(officialIntent);
+                } catch (ActivityNotFoundException e) {
+                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=org.telegram.messenger")));
+                }
+            });
         } else {
             buttonTextView.setText(LocaleController.getString(R.string.InstallOfficialApp));
             buttonTextView.setOnClickListener(v -> context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=org.telegram.messenger"))));
