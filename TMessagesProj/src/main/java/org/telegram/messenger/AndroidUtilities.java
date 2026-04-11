@@ -152,9 +152,11 @@ import com.google.android.gms.tasks.Task;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.messenger.utils.CustomHtml;
+import org.telegram.messenger.utils.DebugRecordingCanvas;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.tgnet.tl.TL_stars;
 import org.telegram.ui.ActionBar.AlertDialog;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.BottomSheet;
@@ -182,6 +184,7 @@ import org.telegram.ui.Components.TypefaceSpan;
 import org.telegram.ui.Components.URLSpanReplacement;
 import org.telegram.ui.Components.UndoView;
 import org.telegram.ui.Components.spoilers.SpoilersTextView;
+import org.telegram.ui.DebugRecordingCanvasReplayFragment;
 import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.Stories.PeerStoriesView;
 import org.telegram.ui.Stories.StoryMediaAreasView;
@@ -773,6 +776,7 @@ public class AndroidUtilities {
                     @Override
                     public void updateDrawState(@NonNull TextPaint ds) {
                         ds.setUnderlineText(false);
+                        ds.setTypeface(AndroidUtilities.bold());
                         ds.setColor(color);
                     }
                 }, index, index + len, 0);
@@ -7009,5 +7013,30 @@ public class AndroidUtilities {
         } catch (Throwable e) {
             FileLog.e(e);
         }
+    }
+
+    public static void dumpCanvas(View v) {
+        if (!BuildConfig.DEBUG_PRIVATE_VERSION) {
+            return;
+        }
+
+        final Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        final DebugRecordingCanvas c = new DebugRecordingCanvas(b);
+        v.draw(c);
+        c.logCommands();
+
+        LaunchActivity.instance.presentFragment(new DebugRecordingCanvasReplayFragment(c));
+    }
+
+    public static <A, B> B find(ArrayList<A> array, Class<B> clazz) {
+        if (array == null) {
+            return null;
+        }
+        for (A obj : array) {
+            if (clazz.isInstance(obj)) {
+                return clazz.cast(obj);
+            }
+        }
+        return null;
     }
 }

@@ -52,8 +52,8 @@ public class BlurredBackgroundProviderImpl {
         return new BlurredBackgroundProviderBuilder(resourcesProvider)
             .setBackgroundColor((r, isDark) ->
                 Theme.multAlpha(Theme.getColor(Theme.key_actionBarDefaultSubmenuBackground), isDark ? 0.85f : 0.76f))
-            .setStrokeColorTop(0xFFFFFFFF, 0x20FFFFFF)
-            .setStrokeColorBottom(0xFFFFFFFF, 0x20FFFFFF)
+            .setStrokeColorTop(0xFFFFFFFF, 0)
+            .setStrokeColorBottom(0xFFFFFFFF, 0)
             .setShadowColor(0x26000000, 0)
             .setShadowLayer(dpf2(4f), 0, 0)
             .setStrokeWidth(dpf2(2 / 3f), dpf2(2 / 3f))
@@ -103,6 +103,21 @@ public class BlurredBackgroundProviderImpl {
                 //.setShadowLayer(dpf2(10 / 3f), 0, dpf2(2 / 3f))
                 .setStrokeWidth(dpf2(0.5f), dpf2(0.5f))
                 .build();
+    }
+
+    public static BlurredBackgroundProvider bulletin(Theme.ResourcesProvider resourcesProvider) {
+        return new BlurredBackgroundProviderBuilder(resourcesProvider)
+            .setBackgroundColor((r, isDark) -> {
+                final float alpha = LiteMode.isEnabled(LiteMode.FLAG_LIQUID_GLASS) ? 0.85f : 0.76f;
+                final int colorBg = Theme.getColor(Theme.key_undo_background, r);
+                return Theme.multAlpha(colorBg, alpha);
+            })
+            //.setStrokeColorTop(0xFFFFFFFF, 0x28FFFFFF)
+            //.setStrokeColorBottom(0xFFFFFFFF, 0x14FFFFFF)
+            //.setShadowColor(0x20000000, 0)
+            //.setShadowLayer(dpf2(10 / 3f), 0, dpf2(2 / 3f))
+            .setStrokeWidth(dpf2(0.5f), dpf2(0.5f))
+            .build();
     }
 
     public static BlurredBackgroundProvider inputFieldDialogActivity(Theme.ResourcesProvider resourcesProvider) {
@@ -157,6 +172,16 @@ public class BlurredBackgroundProviderImpl {
             .setShadowColor(0x30000000, 0x04FFFFFF)
             .setShadowLayer(dpf2(12 / 3f), 0, dpf2(1 / 3f))
             .setStrokeWidth(dpf2(0.67f), dpf2(0.67f))
+            .build();
+    }
+
+    public static BlurredBackgroundProvider shadow(Theme.ResourcesProvider resourcesProvider) {
+        return new BlurredBackgroundProviderBuilder(resourcesProvider)
+            .setStrokeColorTop(0, 0x28FFFFFF)
+            .setStrokeColorBottom(0, 0x14FFFFFF)
+            .setShadowColor(0x30000000, 0x04FFFFFF)
+            .setShadowLayer(dpf2(12 / 3f), 0, dpf2(1 / 3f))
+            .setStrokeWidth(dpf2(0.4f), dpf2(0.4f))
             .build();
     }
 
